@@ -1,3 +1,4 @@
+import traceback
 from unittest import TestCase
 import more
 
@@ -25,7 +26,7 @@ class ChunkedTest(TestCase):
         )
 
     def test_odd(self):
-        self.assertEquals(
+        self.assertEqual(
             list(more.chunked('ABCDE',3)), [['A','B','C'],['D','E']]
         )
 
@@ -55,3 +56,24 @@ class ChunkedTest(TestCase):
         self.assertRaisesRegex(
             ValueError, 'n cant be None when strict is True', f
         )
+
+
+class FirstTest(TestCase):
+    def test_many(self):
+        self.assertEqual(more.first(x for x in range(4)), 0)
+
+    def test_one(self):
+        self.assertEqual(more.first([3]), 3)
+    
+    def test_default(self):
+        self.assertEqual(more.first([], 'boo'), 'boo')
+
+    def test_empty_stop_iteration(self):
+        try:
+            more.first([])
+        except ValueError:
+            formatted_exec = traceback.format_exc()
+            self.assertIn('StopIteration', formatted_exec)
+            self.assertIn('The above exception was the direct cause', formatted_exec)
+        else:
+            self.fail()
