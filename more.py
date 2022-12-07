@@ -1,5 +1,7 @@
+from collections import deque
 from functools import partial
 from itertools import islice
+from typing import Sequence
 
 l = [1,2,3,4,5,6] # [[1,2,3],[4,5,6],[7]]
 e = []
@@ -34,3 +36,20 @@ def first(iterable, default=_marker):
         return default
     
 # print(first(e))
+
+def last(iterable, default=_marker):
+    try:
+        if isinstance(iterable,Sequence):
+            return iterable[-1]
+        elif hasattr(iterable, '__reversed__'):
+            return next(reversed(iterable))
+        else:
+            return deque(iterable, maxlen=1)[-1]
+    except (IndexError, TypeError, StopIteration):
+        if default is _marker:
+            raise ValueError(
+                'last() was called on an empty iterable, and no default was provided.'
+            )
+        return default
+
+print(last(l))
