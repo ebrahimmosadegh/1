@@ -106,3 +106,15 @@ class LastTest(TestCase):
             with self.subTest(iterable=iterable):
                 with self.assertRaises(ValueError):
                     more.last(iterable)
+
+class NthOrLastTests(TestCase):
+    def test_basic(self):
+        self.assertEqual(more.nth_or_last(range(3), 1), 1)
+        self.assertEqual(more.nth_or_last(range(3), 3), 2) # [0, 1, 2]
+
+    def test_default_value(self):
+        default = 42
+        self.assertEqual(more.nth_or_last(range(0), 2, default), default)
+
+    def test_empty_iterable_no_default(self):
+        self.assertRaises(ValueError, lambda:more.nth_or_last(range(0), 0))

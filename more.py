@@ -52,4 +52,9 @@ def last(iterable, default=_marker):
             )
         return default
 
-print(last(l))
+# print(last(l))
+
+def nth_or_last(iterable, n, default=_marker):
+    return last(islice(iterable, n+1), default=default)
+
+print(nth_or_last(l, 4))
