@@ -1,9 +1,10 @@
 from collections import deque
 from functools import partial
-from itertools import islice
+from itertools import islice, chain
 from typing import Sequence
 
 l = [1,2,3,4,5,6] # [[1,2,3],[4,5,6],[7]]
+s = ['a', 'b', 'c', 'd']
 e = []
 _marker = object()
 
@@ -80,3 +81,9 @@ def one(iterable, too_short=None, too_long=None):
         )
         raise too_long or ValueError(msg)
     return first_value
+
+
+def interleave(*iterable):
+    return chain.from_iterable(zip(*iterable))
+
+print(list(interleave(l, s)))
