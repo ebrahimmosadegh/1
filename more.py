@@ -1,6 +1,6 @@
 from collections import deque
 from functools import partial
-from itertools import islice, chain
+from itertools import islice, chain, repeat
 from typing import Sequence
 
 l = [1,2,3,4,5,6] # [[1,2,3],[4,5,6],[7]]
@@ -86,4 +86,9 @@ def one(iterable, too_short=None, too_long=None):
 def interleave(*iterable):
     return chain.from_iterable(zip(*iterable))
 
-print(list(interleave(l, s)))
+# print(list(interleave(l, s))) # [1, 'a', 2, 'b', 3, 'c', 4, 'd']
+
+def repeat_each(iterable, n=2):
+    return chain.from_iterable(map(repeat, iterable, repeat(n)))
+
+# print(list(repeat_each(s))) # ['a', 'a', 'b', 'b', 'c', 'c', 'd', 'd']
