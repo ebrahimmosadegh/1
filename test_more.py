@@ -265,3 +265,28 @@ class StrictlyNTests(TestCase):
         
         self.assertEqual(actual, ['a', 'b'])
         self.assertIn('Picked the first 2 items', exc.output[0])
+
+class OnlyTests(TestCase):
+    def test_default(self):
+        self.assertEqual(more.only([]), None)
+        self.assertEqual(more.only([1]), 1)
+        self.assertRaises(ValueError, lambda: more.only([1, 2]))
+        
+    def test_custom_value(self):
+        self.assertEqual(more.only([], default='!'), '!')
+        self.assertEqual(more.only([1], default='!'), 1)
+        self.assertRaises(ValueError, lambda: more.only([1, 2], default='!'))
+
+    def test_custom_exception(self):
+        self.assertEqual(more.only([], too_long=RuntimeError), None)
+        self.assertEqual(more.only([1], too_long=RuntimeError), 1)
+        self.assertRaises(RuntimeError, lambda: more.only([1, 2], too_long=RuntimeError))
+
+    def test_default_exception_message(self):
+        self.assertRaisesRegex(
+            ValueError,
+            'Expected exactly one item in iterable, but got foo, bar, ' 
+            'and perhaps more.',
+            lambda: more.only(['foo', 'bar', 'baz'])
+
+        )
