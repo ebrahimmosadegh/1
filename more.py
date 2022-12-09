@@ -11,6 +11,9 @@ _marker = object()
 def take(iterable, n):
     return list(islice(iterable, n))
 
+def raise_(exception, *args):
+    raise exception(*args)
+
 def chunked(iterable, n, strict=False):
     iterator = iter(partial(take, iter(iterable), n), [])
     if strict:
@@ -92,3 +95,34 @@ def repeat_each(iterable, n=2):
     return chain.from_iterable(map(repeat, iterable, repeat(n)))
 
 # print(list(repeat_each(s))) # ['a', 'a', 'b', 'b', 'c', 'c', 'd', 'd']
+
+def strictly_n(iterable, n, too_short=None, too_long=None):
+    if too_short is None:
+        too_short = lambda item_count: raise_(
+            ValueError,
+            f'Too few items in iterable (got {item_count})'
+        )
+    if too_long is None:
+        too_long = lambda item_count: raise_(
+            ValueError,
+            f'Too many items in iterable (got at least {item_count})'
+        )
+    
+    it = iter(iterable)
+    for i in range(n):
+        try:
+            item = next(it)
+        except StopIteration:
+            too_short(i)
+            return
+        else:
+            yield item
+    
+    try:
+        next(it)
+    except StopIteration:
+        pass
+    else:
+        too_long(n+1)
+
+# print(list(strictly_n(s, 4))) # ['a', 'b', 'c', 'd']
